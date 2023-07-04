@@ -1,18 +1,18 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
+import { auth0 } from "../App";
+import { AUTH0_API_AUDIENCE } from "@env";
 import { TextInput, Avatar, Button } from "react-native-paper";
 
 const LoginScreen = () => {
-  const handleLogin = () => {
-    // Implement your Auth0 login logic here
-  };
-
-  const handleGoogleLogin = () => {
-    // Implement Google login logic here
-  };
-
-  const handleTwitterLogin = () => {
-    // Implement Twitter login logic here
+  const handleLogin = (
+    scope: "offline_access" | "twitter" | "google-oauth2"
+  ) => {
+    auth0.webAuth.authorize({
+      scope,
+      audience: AUTH0_API_AUDIENCE,
+      prompt: "login",
+    });
   };
 
   return (
@@ -26,13 +26,17 @@ const LoginScreen = () => {
           secureTextEntry
           style={styles.input}
         />
-        <Button mode="contained" onPress={handleLogin} style={styles.button}>
+        <Button
+          mode="contained"
+          onPress={() => handleLogin("offline_access")}
+          style={styles.button}
+        >
           Login
         </Button>
         <View style={styles.socialButtonsContainer}>
           <Button
             mode="outlined"
-            onPress={handleGoogleLogin}
+            onPress={() => handleLogin("google-oauth2")}
             style={[styles.button, styles.googleButton]}
             icon="google"
             labelStyle={styles.socialButtonLabel}
@@ -41,7 +45,7 @@ const LoginScreen = () => {
           </Button>
           <Button
             mode="outlined"
-            onPress={handleTwitterLogin}
+            onPress={() => handleLogin("twitter")}
             style={[styles.button, styles.twitterButton]}
             icon="twitter"
             labelStyle={styles.socialButtonLabel}
